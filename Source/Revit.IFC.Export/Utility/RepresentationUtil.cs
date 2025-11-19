@@ -582,6 +582,13 @@ namespace Revit.IFC.Export.Utility
           IFCExportBodyParams extrusionCreationData, out BodyData bodyData, bool skipBody = false, bool instanceGeometry = false)
       {
          bodyData = null;
+
+         // Skip geometry export if ExportWithoutGeometry flag is set
+         if (ExporterCacheManager.ExportOptionsCache.ExportWithoutGeometry)
+         {
+            skipBody = true;
+         }
+
          SolidMeshGeometryInfo info = null;
          IList<GeometryObject> geometryList = new List<GeometryObject>();
 

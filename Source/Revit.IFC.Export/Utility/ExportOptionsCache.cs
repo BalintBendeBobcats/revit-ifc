@@ -397,6 +397,10 @@ namespace Revit.IFC.Export.Utility
             cache.ElementsForExport = ids;
          }
 
+         // "ExportWithoutGeometry" option - export only properties and quantities, skip geometry
+         bool? exportWithoutGeometry = OptionsUtil.GetNamedBooleanOption(options, "ExportWithoutGeometry");
+         cache.ExportWithoutGeometry = exportWithoutGeometry.GetValueOrDefault(false);
+
          // "ExportAnnotations" override
          cache.ExportAnnotationsOverride = OptionsUtil.GetNamedBooleanOption(options, "Export2DElements");
 
@@ -994,6 +998,12 @@ namespace Revit.IFC.Export.Utility
       /// a specific set of elements.
       /// </summary>
       public bool ExportGeometryOnly { get; set; } = false;
+
+      /// <summary>
+      /// Export without geometry data, keeping only properties and quantities.
+      /// IFC entities will still be created with their metadata, but without shape representations.
+      /// </summary>
+      public bool ExportWithoutGeometry { get; set; } = false;
 
       /// <summary>
       /// A collection of elements from which to export (before filtering is applied).  If empty, all elements in the document
