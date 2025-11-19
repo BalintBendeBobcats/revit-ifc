@@ -194,3 +194,10 @@ FakesAssemblies/
 *.ide-wal
 .vs/
 *.sig
+
+# JetBrains Rider
+.idea/
+
+# Build intermediate files
+Intermediate/
+[Ii]ntermediate/
