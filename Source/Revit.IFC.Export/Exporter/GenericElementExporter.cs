@@ -206,11 +206,21 @@ namespace Revit.IFC.Export.Exporter
                // currently have opening.
                // If they can have openings in the future, we can add this.
                IFCAnyHandle bodyRepHnd = bodyData.RepresentationHnd;
-               if (IFCAnyHandleUtil.IsNullOrHasNoValue(bodyRepHnd) || extraParams.GetOpenings().Count > 0)
+               bool hasValidBodyRep = !IFCAnyHandleUtil.IsNullOrHasNoValue(bodyRepHnd);
+
+               // Always fail if there are openings (not supported yet)
+               if (extraParams.GetOpenings().Count > 0)
                   return false;
 
-               representations3D.Add(bodyRepHnd);
-               repMapTrfList.Add(null);
+               // Skip geometry check if ExportWithoutGeometry is set - we still want to create the entity
+               if (!hasValidBodyRep && !ExporterCacheManager.ExportOptionsCache.ExportWithoutGeometry)
+                  return false;
+
+               if (hasValidBodyRep)
+               {
+                  representations3D.Add(bodyRepHnd);
+                  repMapTrfList.Add(null);
+               }
             }
 
             typeInfo.StyleTransform = ExporterIFCUtils.GetUnscaledTransform(exporterIFC,
@@ -252,11 +262,16 @@ namespace Revit.IFC.Export.Exporter
          XYZ scaledMapOrigin = XYZ.Zero;
          Transform scaledTrf = originalTrf.Multiply(typeInfo.StyleTransform);
 
-         // create instance.  
+         // create instance.
          IList<IFCAnyHandle> shapeReps = FamilyInstanceExporter.CreateShapeRepresentations(exporterIFC,
             file, element, categoryId, typeInfo, scaledMapOrigin);
+         // Allow null shapeReps when ExportWithoutGeometry is set - entity will be created without geometry
          if (shapeReps == null)
-            return false;
+         {
+            if (!ExporterCacheManager.ExportOptionsCache.ExportWithoutGeometry)
+               return false;
+            shapeReps = new List<IFCAnyHandle>();
+         }
 
          Transform boundingBoxTrf = (offsetTransform != null) ? offsetTransform.Inverse : Transform.Identity;
          boundingBoxTrf = boundingBoxTrf.Multiply(scaledTrf.Inverse);

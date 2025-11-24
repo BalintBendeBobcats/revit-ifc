@@ -1624,6 +1624,10 @@ namespace Revit.IFC.Export.Exporter
       public static IFCAnyHandle ExportBodyAsAdvancedBrep(ExporterIFC exporterIFC, Element element,
           GeometryObject geomObject)
       {
+         // Skip geometry export if ExportWithoutGeometry flag is set
+         if (ExporterCacheManager.ExportOptionsCache.ExportWithoutGeometry)
+            return null;
+
          IFCFile file = exporterIFC.GetFile();
          Document document = element.Document;
 
@@ -2756,6 +2760,10 @@ namespace Revit.IFC.Export.Exporter
       public static IList<IFCAnyHandle> ExportBodyAsTessellatedFaceSet(ExporterIFC exporterIFC, Element element, BodyExporterOptions options,
          GeometryObject geomObject, Transform lcs = null)
       {
+         // Skip geometry export if ExportWithoutGeometry flag is set
+         if (ExporterCacheManager.ExportOptionsCache.ExportWithoutGeometry)
+            return new List<IFCAnyHandle>();
+
          IList<IFCAnyHandle> tessellatedBodyList = null;
 
          if (!ExporterCacheManager.ExportOptionsCache.ExportAsOlderThanIFC4 && !ExporterCacheManager.ExportOptionsCache.UseOnlyTriangulation)
@@ -3534,6 +3542,11 @@ namespace Revit.IFC.Export.Exporter
          bool instanceGeometry = true)
       {
          BodyData bodyData = new();
+
+         // Skip geometry export if ExportWithoutGeometry flag is set
+         if (ExporterCacheManager.ExportOptionsCache.ExportWithoutGeometry)
+            return bodyData;
+
          if (geometryList.Count == 0)
             return bodyData;
 

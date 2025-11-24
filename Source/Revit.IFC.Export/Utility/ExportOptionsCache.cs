@@ -399,7 +399,7 @@ namespace Revit.IFC.Export.Utility
 
          // "ExportWithoutGeometry" option - export only properties and quantities, skip geometry
          bool? exportWithoutGeometry = OptionsUtil.GetNamedBooleanOption(options, "ExportWithoutGeometry");
-         cache.ExportWithoutGeometry = exportWithoutGeometry.GetValueOrDefault(false);
+         cache.ExportWithoutGeometry = exportWithoutGeometry.GetValueOrDefault(true);
 
          // "ExportAnnotations" override
          cache.ExportAnnotationsOverride = OptionsUtil.GetNamedBooleanOption(options, "Export2DElements");

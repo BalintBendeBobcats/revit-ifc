@@ -2709,7 +2709,7 @@ namespace Revit.IFC.Export.Exporter
             LanguageType langType = ExporterCacheManager.LanguageType;
             string languageExtension = GetLanguageExtension(langType);
             string versionBuildName = ifcFileDocumentInfo.VersionBuildName;
-            string versionInfos = versionBuildName + languageExtension + " - " +
+            string versionInfos = "Kestrel - " + versionBuildName + languageExtension + " - " +
                ExporterCacheManager.ExportOptionsCache.ExporterVersion;
 
             fHItem.Authorization ??= string.Empty;

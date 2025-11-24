@@ -1268,7 +1268,9 @@ namespace Revit.IFC.Export.Exporter
                         // Any of the cases above could mean that the internal API function would return
                         // incorrect results (generally, missing openings or clippings).
 
-                        if (CanTryToCreateAsExtrusion(wallElement, exportParts, exportByComponents, exportingWallElement,
+                        // Skip extrusion creation if ExportWithoutGeometry is set
+                        if (!ExporterCacheManager.ExportOptionsCache.ExportWithoutGeometry &&
+                           CanTryToCreateAsExtrusion(wallElement, exportParts, exportByComponents, exportingWallElement,
                            exportingAxis, trimmedCurve, isCurtainPanel, hasCutsWallSweep))
                         {
                            bool isCompletelyClipped;
@@ -1328,7 +1330,9 @@ namespace Revit.IFC.Export.Exporter
                               if (IFCAnyHandleUtil.IsNullOrHasNoValue(bodyRep))
                               {
                                  extraParams.ClearOpenings();
-                                 return null;
+                                 // Don't return null if ExportWithoutGeometry is set - continue to create entity without geometry
+                                 if (!ExporterCacheManager.ExportOptionsCache.ExportWithoutGeometry)
+                                    return null;
                               }
                            }
 
